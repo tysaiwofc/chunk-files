@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 
 // Caminho para o executável
-const executablePath = './combine_files.exe'; // Ajuste o caminho conforme necessário
+const executablePath = '../combine_files.exe'; // Ajuste o caminho conforme necessário
 
 // Nome do arquivo de saída (pode ser passado como argumento ou definido aqui)
 const outputFile = 'combined_output.jpg';

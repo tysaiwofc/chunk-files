@@ -87,7 +87,7 @@ After the file selection dialog appears, choose the file you want to split. The 
 
 # Output Image
 
-<img src="output.png">
+<img src="./examples/combined_output.jpg">
 
 ## Notes
 

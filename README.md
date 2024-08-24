@@ -27,7 +27,7 @@ This project contains two command-line tools for binary file manipulation on Win
 To compile `combine_files.cpp`, use the following command:
 
 ```sh
-g++ combine_files.cpp -o combine_files.exe -lShlwapi
+g++ -o combine_files combine_files.cpp ./files/combine_files_icon.o -lshlwapi
 ```
 
 ### SplitFiles
@@ -38,7 +38,7 @@ g++ combine_files.cpp -o combine_files.exe -lShlwapi
 To compile `split_files.cpp`, use the following command:
 
 ```sh
-g++ split_files.cpp -o split_files.exe
+g++ -o split_files split_files.cpp ./files/split_files_icon.o -lcomdlg32
 ```
 
 ## Usage

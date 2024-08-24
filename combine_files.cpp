@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <Shlwapi.h>
+#include <iomanip>
 
 #pragma comment(lib, "Shlwapi.lib")
 
@@ -39,8 +40,6 @@ std::vector<std::string> listBinFiles(const std::string& directory) {
     do {
         std::string filePath = directory + "\\" + findFileData.cFileName;
         binFiles.push_back(filePath);
-
-        std::cout << "Found file: " << filePath << std::endl;
     } while (FindNextFile(hFind, &findFileData) != 0);
 
     FindClose(hFind);
@@ -55,13 +54,26 @@ void combineBinFiles(const std::string& directory, const std::string& outputFile
         return;
     }
 
+    // Calculate the total size of all .bin files
+    uint64_t totalSize = 0;
+    for (const std::string& file : binFiles) {
+        std::ifstream input(file, std::ios::binary | std::ios::ate);
+        if (input) {
+            totalSize += input.tellg();
+        }
+    }
+
     std::ofstream output(outputFile, std::ios::binary);
     if (!output) {
         std::cerr << "Failed to create the output file." << std::endl;
         return;
     }
 
-    for (const std::string& file : binFiles) {
+    uint64_t combinedSize = 0;
+    size_t fileCount = binFiles.size();
+    
+    for (size_t i = 0; i < fileCount; ++i) {
+        const std::string& file = binFiles[i];
         std::ifstream input(file, std::ios::binary);
         if (!input) {
             std::cerr << "Failed to open the file: " << file << std::endl;
@@ -69,9 +81,17 @@ void combineBinFiles(const std::string& directory, const std::string& outputFile
         }
 
         output << input.rdbuf();
+        combinedSize += input.tellg();
+
+        // Print progress in JSON format
+        double progress = (static_cast<double>(i + 1) / fileCount) * 100.0;
+        double sizeInMB = combinedSize / (1024.0 * 1024.0);
+        std::cout << "{\"progress\": \"" << std::fixed << std::setprecision(2) << progress 
+                  << "%\", \"size\": \"" << std::fixed << std::setprecision(2) << sizeInMB 
+                  << " MB\"}" << std::endl;
     }
 
-    std::cout << "Files combined into: " << outputFile << std::endl;
+    std::cout << std::endl << "Files combined into: " << outputFile << std::endl;
 }
 
 int main(int argc, char* argv[]) {
